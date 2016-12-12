@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Django Bookmark | {% block title %}{% endblock title %}</title>
+    <link rel="stylesheet" href="/static/style.css" type="text/css"/>
+</head>
+<body>
+    <div id="nav">
+        <a href="/">Home</a> |
+        {% if user.is_authenticated %}
+            Welcome, {{ user.username }}
+            (<a href="/logout/">Logout</a> )
+        {% else %}
+            <a href="/login/">Login</a> |
+            <a href="/register/">Register</a>
+        {% endif %}
+    </div>
+    <h1>{% block head %}{% endblock head %}</h1>
+    {% block content %} {% endblock content %}
+</body>
+</html>

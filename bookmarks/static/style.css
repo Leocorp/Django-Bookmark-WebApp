@@ -1,0 +1,9 @@
+#nav
+{
+    float: right;
+    background-color: aquamarine;
+}
+
+input{
+    display: block;
+}

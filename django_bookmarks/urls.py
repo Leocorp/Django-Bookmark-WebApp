@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from django.views.generic import TemplateView
 
 from bookmarks.views import *
 
@@ -22,4 +23,8 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', main_page),
     url(r'^user/(\w+)/$', user_page),
+    url(r'^login/$', 'django.contrib.auth.views.login'),
+    url(r'^logout/$', logout_page),
+    url(r'^register/$', register_page),
+    url(r'^register/success/$', TemplateView.as_view(template_name='registration/register_success.html'))
 ]

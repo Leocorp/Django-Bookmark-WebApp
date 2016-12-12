@@ -1,11 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ head_title }}</title>
-</head>
-<body>
-    <h1>{{ page_title }}</h1>
-    <p>{{ page_body }}</p>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %} {{ head_title }} {% endblock title %}
+{% block head %} {{ page_title }} {% endblock head %}
+{% block content %}
+    {% if user.username %} <!-Check if the user is set>
+        <p>Welcome, {{ user.username }}</p>
+        <p>{{ page_body }}</p>
+    {% else %}
+        <p>Welcome, Anonymous!</p>
+        <p>You need to <a href="/login/">Login</a> before you can store and share bookmarks.</p>
+    {% endif %}
+{% endblock content %}
