@@ -7,6 +7,7 @@ from django.template import RequestContext
 
 from bookmarks.forms import *
 from bookmarks.models import Link, Bookmark, Tag
+from django.contrib.auth.decorators import login_required
 
 def main_page(request):
 
@@ -65,6 +66,7 @@ def register_page(request):
         })
         return render_to_response('registration/register.html',variables) #use hierarchical path
 
+@login_required(login_url='/login/')
 def bookmark_save_page(request):
     if request.method == 'POST':
         form = BookmarkSaveForm(request.POST)

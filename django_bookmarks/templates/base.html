@@ -9,6 +9,7 @@
     <div id="nav">
         <a href="/">Home</a> |
         {% if user.is_authenticated %}
+            <a href="/save/">Submit</a> |
             Welcome, {{ user.username }}
             (<a href="/logout/">Logout</a> )
         {% else %}
