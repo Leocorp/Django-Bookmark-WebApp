@@ -37,3 +37,8 @@ class RegistrationForm(forms.Form):
         except ObjectDoesNotExist:
             return email
         raise forms.ValidationError('Email is already in use!')
+
+class BookmarkSaveForm(forms.Form):
+    url = forms.URLField(label='URL', widget= forms.TextInput(attrs={'size':64}))
+    title = forms.CharField(label='Title', widget= forms.TextInput(attrs={'size':64}))
+    tags = forms.CharField(label='Tag', widget= forms.TextInput(attrs={'size':64}),required=False)

@@ -82,6 +82,7 @@
       <primary-key columns="id"/>
       <foreign-key name="#FAKE_bookmarks_bookmark_1" columns="user_id" ref-table="auth_user" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
       <foreign-key name="#FAKE_bookmarks_bookmark_2" columns="link_id" ref-table="bookmarks_link" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
+      <exported-key name="#FAKE_bookmarks_tag_bookmark_1" table="bookmarks_tag_bookmark" schema="" catalog="" columns="bookmark_id"/>
       <index name="bookmarks_bookmark_e8701ad4" unique="true" columns="user_id"/>
       <index name="bookmarks_bookmark_52034fe0" unique="true" columns="link_id"/>
     </table>
@@ -90,6 +91,23 @@
       <column name="url" sqlType="VARCHAR(200)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <primary-key columns="id"/>
       <exported-key name="#FAKE_bookmarks_bookmark_2" table="bookmarks_bookmark" schema="" catalog="" columns="link_id"/>
+    </table>
+    <table name="bookmarks_tag" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="name" sqlType="VARCHAR(64)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <primary-key columns="id"/>
+      <exported-key name="#FAKE_bookmarks_tag_bookmark_2" table="bookmarks_tag_bookmark" schema="" catalog="" columns="tag_id"/>
+    </table>
+    <table name="bookmarks_tag_bookmark" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="tag_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="bookmark_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <primary-key columns="id"/>
+      <foreign-key name="#FAKE_bookmarks_tag_bookmark_1" columns="bookmark_id" ref-table="bookmarks_bookmark" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
+      <foreign-key name="#FAKE_bookmarks_tag_bookmark_2" columns="tag_id" ref-table="bookmarks_tag" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
+      <index name="bookmarks_tag_bookmark_67d676a6" unique="true" columns="bookmark_id"/>
+      <index name="bookmarks_tag_bookmark_76f094bc" unique="true" columns="tag_id"/>
+      <index name="bookmarks_tag_bookmark_tag_id_d02f3f7d_uniq" unique="true" columns="tag_id,bookmark_id"/>
     </table>
     <table name="django_admin_log" schema="" catalog="" type="TABLE">
       <column name="id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>

@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect
 from django.template import RequestContext
 
 from bookmarks.forms import *
+from bookmarks.models import Link, Bookmark, Tag
 
 def main_page(request):
 
@@ -63,3 +64,34 @@ def register_page(request):
             'form':form
         })
         return render_to_response('registration/register.html',variables) #use hierarchical path
+
+def bookmark_save_page(request):
+    if request.method == 'POST':
+        form = BookmarkSaveForm(request.POST)
+        if form.is_valid():
+            #Create or get Link
+            link, dummy = Link.objects.get_or_create(url=form.cleaned_data['url'])
+            bookmark, created = Bookmark.objects.get_or_create(user=request.user, link = link)
+            #update the bookmark title
+            bookmark.title = form.cleaned_data['title']
+            if not created:
+                bookmark.tag_set.clear()
+
+            #create new tag list
+            tagnames = form.cleaned_data['tags'].split()
+            for tagname in tagnames:
+                tag, dummy = Tag.objects.get_or_create(name=tagname)
+                bookmark.tag_set.add(tag)
+            bookmark.save()
+
+            return HttpResponseRedirect('/user/%s/' % request.user.username)
+        else:
+            variables = RequestContext(request, {
+                'form':form
+            })
+            return render_to_response('bookmark_save.html',variables)
+    form = BookmarkSaveForm()
+    variables = RequestContext(request, {
+                'form':form
+            })
+    return render_to_response('bookmark_save.html', variables)

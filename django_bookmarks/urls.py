@@ -20,11 +20,19 @@ from django.views.generic import TemplateView
 from bookmarks.views import *
 
 urlpatterns = [
+    #Super Manager
     url(r'^admin/', admin.site.urls),
+
+    #Browsing
     url(r'^$', main_page),
     url(r'^user/(\w+)/$', user_page),
+
+    #Session Management
     url(r'^login/$', 'django.contrib.auth.views.login'),
     url(r'^logout/$', logout_page),
     url(r'^register/$', register_page),
-    url(r'^register/success/$', TemplateView.as_view(template_name='registration/register_success.html'))
+    url(r'^register/success/$', TemplateView.as_view(template_name='registration/register_success.html')),
+
+    #Account Management
+    url(r'^save/$', bookmark_save_page),
 ]
