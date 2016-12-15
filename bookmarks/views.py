@@ -4,6 +4,7 @@ from django.http import Http404
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
 from django.template import RequestContext
+from django.shortcuts import get_object_or_404
 
 from bookmarks.forms import *
 from bookmarks.models import Link, Bookmark, Tag
@@ -20,23 +21,52 @@ def main_page(request):
     return render_to_response('main_page.html',variables)
 
 def user_page(request, username):
-    try:
-        user = User.objects.get(username=username)
-    except:
-        raise Http404('Requested User Not Found!')
-
-    bookmarks = user.bookmark_set.all() #gets all data instances in Bookmark table belonging to the User.
-                                        # Created by django when the two tables were linked.
-
+    user = get_object_or_404(User, username= username)
+    bookmarks = user.bookmark_set.order_by('-id')
     variables = RequestContext(
         request,
         {
         'username':username,
-        'bookmarks':bookmarks
+        'bookmarks':bookmarks,
+            'show_tags': True,
     })
 
 
     return render_to_response('user_page.html', variables)
+
+def tag_page(request, tag_name):
+    tag = get_object_or_404(Tag, name=tag_name)
+    bookmarks = tag.bookmark.order_by('-id') #Descending order
+    variables = RequestContext(request, {
+        'bookmarks':bookmarks,
+        'tag_name':tag_name,
+        'show_tags':True,
+        'show_user':True,
+    })
+    return render_to_response('tag_page.html', variables)
+
+def tag_cloud_page(request):
+    MAX_WEIGHT = 5
+    tags = Tag.objects.order_by('name')
+    min_count = max_count = tags[0].bookmark.count()
+    for tag in tags:
+        tag.count = tag.bookmark.count()
+        if tag.count < min_count:
+            min_count = tag.count
+        if max_count < tag.count:
+            max_count = tag.count
+        #compute range to avoid a division by zero
+        range = float(max_count - min_count)
+        if range == 0:
+            range = 1.0
+        #calculate weight
+    for tag in tags:
+        tag.weight = int(MAX_WEIGHT * (tag.count - min_count)/range)
+    variables = RequestContext(request, {
+        'tags':tags
+    })
+    return render_to_response('tag_cloud_page.html', variables)
+
 
 def logout_page(request):
     logout(request)
