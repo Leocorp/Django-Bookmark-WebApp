@@ -4,7 +4,7 @@
 {% block head %} {{ page_title }} {% endblock head %}
 {% block content %}
     {% if user.username %} <!-Check if the user is set>
-        <p>Welcome, {{ user.username }}</p>
+        <p>Welcome, {{ user.username.capitalize }}</p>
         <p>{{ page_body }}</p>
     {% else %}
         <p>Welcome, Anonymous!</p>

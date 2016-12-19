@@ -4,13 +4,16 @@
     <meta charset="UTF-8">
     <title>Django Bookmark | {% block title %}{% endblock title %}</title>
     <link rel="stylesheet" href="/static/style.css" type="text/css"/>
+    <script type="text/javascript" src="/static/jquery.js"></script>
+    {% block external %} {% endblock external %}
 </head>
 <body>
     <div id="nav">
         <a href="/">Home</a> |
         {% if user.is_authenticated %}
             <a href="/save/">Submit</a> |
-            Welcome, {{ user.username }}
+            <a href="/search/">Search</a> |
+            Welcome, {{ user.username.capitalize }}
             (<a href="/logout/">Logout</a> )
         {% else %}
             <a href="/login/">Login</a> |

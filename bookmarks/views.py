@@ -101,22 +101,9 @@ def bookmark_save_page(request):
     if request.method == 'POST':
         form = BookmarkSaveForm(request.POST)
         if form.is_valid():
-            #Create or get Link
-            link, dummy = Link.objects.get_or_create(url=form.cleaned_data['url'])
-            bookmark, created = Bookmark.objects.get_or_create(user=request.user, link = link)
-            #update the bookmark title
-            bookmark.title = form.cleaned_data['title']
-            if not created:
-                bookmark.tag_set.clear()
-
-            #create new tag list
-            tagnames = form.cleaned_data['tags'].split()
-            for tagname in tagnames:
-                tag, dummy = Tag.objects.get_or_create(name=tagname)
-                bookmark.tag_set.add(tag)
-            bookmark.save()
-
+            bookmark = _bookmark_save(request, form)
             return HttpResponseRedirect('/user/%s/' % request.user.username)
+
         else:
             variables = RequestContext(request, {
                 'form':form
@@ -127,3 +114,44 @@ def bookmark_save_page(request):
                 'form':form
             })
     return render_to_response('bookmark_save.html', variables)
+
+def _bookmark_save(request, form):
+        #Create or get Link
+        link, dummy = Link.objects.get_or_create(url=form.cleaned_data['url'])
+        bookmark, created = Bookmark.objects.get_or_create(user=request.user, link = link)
+        #update the bookmark title
+        bookmark.title = form.cleaned_data['title']
+        if not created:
+            bookmark.tag_set.clear()
+
+        #create new tag list
+        tagnames = form.cleaned_data['tags'].split()
+        for tagname in tagnames:
+            tag, dummy = Tag.objects.get_or_create(name=tagname)
+            bookmark.tag_set.add(tag)
+        bookmark.save()
+        return bookmark
+
+
+def search_page(request):
+    form = SearchForm() #pass this form to the render on initial visit ; when there is no query
+    bookmarks = []
+    show_results = False
+    query = request.GET.get('ajaxquery', None)
+    if query:
+        show_results = True
+        form = SearchForm({'query':query})
+        bookmarks = Bookmark.objects.filter(title__icontains = query)[:10] #fetch the bookmarks with their tags
+
+    variables = RequestContext(request, {
+        'form':form,
+        'bookmarks':bookmarks,
+        'show_results':show_results,
+        'show_tags': True,
+        'show_user':True,
+    })
+
+    if request.GET.get('ajaxquery'):
+        return render_to_response('bookmark_list.html', variables)
+    else:
+        return render_to_response('search.html', variables)
